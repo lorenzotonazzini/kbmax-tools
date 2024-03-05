@@ -13,6 +13,7 @@ import readXlsxFile, { Row } from 'read-excel-file'
 import CustomTable from '../../components/CustomTable';
 
 import { useFetch } from '../../hooks/useFetch';
+import ExcelTablesActionBar from '../../components/tablesfromExcel/ExcelTablesActionBar';
 
 
 export interface CustomTableData {
@@ -32,7 +33,7 @@ const getColumnType = (rows: Row[], columnIndex: number): string => {
     var isBoolean = true;
 
     rows.map((row) => {
-        const cellContent : string = (row[columnIndex]) ? row[columnIndex] as string : ""; 
+        const cellContent: string = (row[columnIndex]) ? row[columnIndex] as string : "";
         if (!isNumeric(cellContent)) isNumber = false;
         if (cellContent != 'true' && cellContent != 'false' && Number(cellContent) != 0 && Number(cellContent) != 1) isBoolean = false;
     })
@@ -154,28 +155,7 @@ export default function UploadFromExcelsTables() {
                 }
             </>
             <Center paddingTop={50}></Center>
-            <HStack position={"fixed"} bottom={0} left={0} right={0} height={50} background={"gray"} spacing={3}>
-
-                {
-                    data.length > 0 ?
-                        <>
-                            <Button onClick={handleTableCreation} isLoading={loading} isDisabled={tablesCreated.includes(index)}> Create</Button>
-                            {
-                                (index < data.length - 1) ?
-                                    <>
-                                        <Button onClick={() => setIndex(index + 1)} bg={"blue.400"}
-                                            color={"white"}> Next</Button>
-                                        <Text> {index + 1} of {data.length}</Text>
-                                    </> : <></>
-                            }
-                        </>
-                        :
-                        <></>
-                }
-
-            </HStack>
-
+            <ExcelTablesActionBar data={data} isLoading={loading} isDisabled={tablesCreated.includes(index)} handleTableCreation={handleTableCreation} tableIndex={index} setTableIndex={setIndex} />
         </VStack>
-
     );
 }
