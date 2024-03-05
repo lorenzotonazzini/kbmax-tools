@@ -52,7 +52,7 @@ function HomePage() {
                     >
                         Tools
                     </Button>
-                    <Button rounded={"full"} px={6}>
+                    <Button rounded={"full"} px={6} onClick={() => window.open("https://github.com/lorenzotonazzini/kbmax-tools", '_blank')}>
                         Learn more
                     </Button>
                 </Stack>
