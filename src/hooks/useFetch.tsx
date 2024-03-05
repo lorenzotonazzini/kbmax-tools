@@ -6,23 +6,13 @@ interface FetchResult {
 }
 
 export const useFetch = () => {
+    const [multipleFetchData, setMultipleFetchData] = useState([] as any[]);
     const [fetchData, setData] = useState(null);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
-
-
     const getFetchBackground = (url: string) =>
-        fetch(url).then(res => {
-            return {
-                code: res.status,
-                data: res.json()
-            }
-        }).catch(e => {
-            return {
-                code: 500
-            }
-        });
+        fetch(url).then(res => (res.ok) ? res.json() : res.status);
 
     const postFetchBackground = (url: string, body: any) =>
         fetch(url, {
@@ -50,18 +40,44 @@ export const useFetch = () => {
         setLoading(true);
 
         chrome.tabs.query({ currentWindow: true, active: true }, async function (tabs) {
-            if (tabs[0].id)
+            if (tabs[0].id) {
                 await chrome.scripting.executeScript({
                     target: {
                         tabId: tabs[0].id,
                     },
                     func: getFetchBackground,
                     args: [url],
-                }).then(injectionResults => {
-                    handleFetchResult(injectionResults[0].result)
-                });
-        });
+                }).then(injectionResults => handleFetchResult(injectionResults[0].result));
+            }
 
+        });
+    }
+
+    const multipleFetchGet = (resources: string[]) => {
+        //set state
+        setError(false);
+        setMultipleFetchData([]);
+        setLoading(true);
+        
+        chrome.tabs.query({ currentWindow: true, active: true }).
+            then(tabs => {
+                if (tabs[0].id) {
+                    const promiseArr = resources.map(resource => chrome.scripting.executeScript({
+                        target: {
+                            tabId: tabs[0].id as number,
+                        },
+                        func: getFetchBackground,
+                        args: [resource],
+                    }).then(injectionResults => injectionResults[0].result));
+
+                    Promise.all(promiseArr).then((res) => {
+                        setMultipleFetchData([...res]);
+                        setLoading(false)
+                    });
+                    //Promise.all(promiseArr).then(() => setLoading(false)).then((res) => console.log(res));
+                }
+
+            })
     }
 
     const doFetchPost = async (resource: string, body: any) => {
@@ -70,23 +86,20 @@ export const useFetch = () => {
         setData(null);
         setLoading(true);
 
-        return chrome.tabs.query({ currentWindow: true, active: true }, async function (tabs) {
-            if (tabs[0].id && tabs[0].url) {
-                const companyName = tabs[0].url.split(".com")[0] + ".com";
+        chrome.tabs.query({ currentWindow: true, active: true }, async function (tabs) {
+            if (tabs[0].id) {
                 await chrome.scripting.executeScript({
                     target: {
                         tabId: tabs[0].id,
                     },
                     func: postFetchBackground,
-                    args: [companyName + resource, body],
-                }).then(injectionResults => {
-                    handleFetchResult(injectionResults[0].result)
-                });
+                    args: [resource, body],
+                }).then(injectionResults => handleFetchResult(injectionResults[0].result));
             }
 
         });
 
     }
 
-    return { fetchData, error, loading, doFetchGet, doFetchPost };
+    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, multipleFetchGet };
 };

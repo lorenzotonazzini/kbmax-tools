@@ -5,12 +5,27 @@ import {
     FormErrorMessage,
     FormHelperText,
     Input,
-    Center
+    Center,
+    VStack
 } from '@chakra-ui/react'
+import CustomButton from "../../components/CustomButton";
+import { useFetch } from "../../hooks/useFetch";
+
+interface ReferencedProduct {
+    id: number,
+    type: string
+}
+interface Product {
+    references: ReferencedProduct[]
+}
 
 export default function FindBreakpoints() {
 
     const [configId, setConfigId] = React.useState(0);
+
+    const { multipleFetchGet, multipleFetchData, error, loading } = useFetch();
+
+    const [analysedIds, setAnalysedIds] = React.useState([] as number[]);
 
     //get page url
     React.useEffect(() => {
@@ -21,15 +36,56 @@ export default function FindBreakpoints() {
                 if (numbersInUrl) setConfigId(+numbersInUrl[0])
             }
         })
-    }, [])
+    }, []);
+
+    const handleFindBreakpoints = async () => {
+        getConfigs([configId]);
+    }
+
+    const getConfigs = (ids: number[]) => {
+        multipleFetchGet(ids.map(id => "/api/admin/products/" + id))
+    }
+
+    React.useEffect(() => {
+        if (multipleFetchData.length > 0) {
+
+            const referencedIds = [] as number[];
+            //get referenced configurators
+            (multipleFetchData as Product[]).map(product => {
+                product.references.map((reference) => {
+                    if (reference.type == "Product" && !analysedIds.includes(reference.id)) {
+                        referencedIds.push(reference.id);
+                    }
+                })
+            })
+
+            //to anlyse
+            const toAnalyse = [] as number[];
+            referencedIds.map((id) => {
+                if (!analysedIds.includes(id)) toAnalyse.push(id)
+            })
+
+            //analyse
+            getConfigs(toAnalyse);
+
+            //analysed 
+            setAnalysedIds([...analysedIds, ...referencedIds])
+        }
+    }, [multipleFetchGet]);
 
     return (
-        <Center w={500}>
-            <FormControl padding={10}>
-            <FormLabel>Parent configurator Id</FormLabel>
-            <Input type='number' value={configId} onChange={(e) => setConfigId(+e.target.value)} />
-        </FormControl>
-        </Center>
-        
+        <VStack spacing={5} w={500}>
+            <Center>
+                <FormControl padding={10}>
+                    <FormLabel>Parent configurator Id</FormLabel>
+                    <Input type='number' value={configId} onChange={(e) => setConfigId(+e.target.value)} />
+                </FormControl>
+            </Center>
+            <Center>
+                <CustomButton w={"100%"} margin={3} onClick={handleFindBreakpoints} isLoading={loading}>Find Breakpoints</CustomButton>
+            </Center>
+        </VStack>
+
+
     )
 }

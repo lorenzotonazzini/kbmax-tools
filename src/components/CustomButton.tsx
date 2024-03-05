@@ -27,6 +27,7 @@ export default function CustomButton(props: any) {
             _focus={{
                 bg: "blue.500",
             }}
+            minH={30}
             {...props}
         >
             {props.children}
