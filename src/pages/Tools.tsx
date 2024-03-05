@@ -15,21 +15,21 @@ const ToolsList = [
         route: "/tools/loadFromExcel"
     },
     {
+        name: "Table Reference",
+        description:
+            "TODO: If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it",
+        route: ""
+    },
+    {
         name: "Find breakpoints",
         description:
             "TODO: When you have very complex projects it can happen that you lose breakpoints around, making debugging a difficult task, this tool helps you find them",
-        route: ""
+        route: "/tools/findBreakpoints"
     },
     {
         name: "Find write log",
         description:
             "TODO: Often finding all the 'write logs' in a project is complicated when there start to be several configurators, this tool helps you find them all",
-        route: ""
-    },
-    {
-        name: "Table Reference",
-        description:
-            "TODO: If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it",
         route: ""
     },
     {
