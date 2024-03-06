@@ -14,13 +14,18 @@ import {
 } from '@chakra-ui/react'
 import { CheckCircleIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 
+import { useLocation } from "react-router-dom";
+
+
 import CustomButton from "../../components/CustomButton";
 import { useFetch } from "../../hooks/useFetch";
 import Product, { ProductReferencedResource, ProductResouceType } from "../../interfaces/Product";
 import { Scene } from "../../interfaces/Scene";
 
 
-export default function FindBreakpoints() {
+export default function FindInResources() {
+
+    const { state } = useLocation();
 
     const [configId, setConfigId] = React.useState(0);
 
@@ -39,6 +44,8 @@ export default function FindBreakpoints() {
                 if (numbersInUrl) setConfigId(+numbersInUrl[0])
             }
         })
+
+        console.log(state)
     }, []);
 
     const handleFindBreakpoints = async () => {
@@ -52,9 +59,17 @@ export default function FindBreakpoints() {
         multipleFetchGet(resources.map(resource => (resource.type == ProductResouceType.Product) ? "/api/admin/products/" + resource.id : "/api/scenes/" + resource.id))
     }
 
+    const isStringContains = (mainString: string, texts: string[]) => {
+        var isIncluded = false;
+        texts.map(text => {
+            if (mainString.includes(text)) isIncluded = true
+        })
+
+        return isIncluded;
+    }
+
     React.useEffect(() => {
         if (multipleFetchData.length > 0) {
-
             const referencedIds = [] as ProductReferencedResource[];
 
             //get referenced configurators
@@ -84,27 +99,27 @@ export default function FindBreakpoints() {
 
             const isAScene = (obj: any): obj is Scene => {
                 return 'id' in obj && 'graph' in obj;
-              }
+            }
 
             const resourceWithBreakpoints = [] as ProductReferencedResource[];
             //check if they contains breakpoints
             multipleFetchData.map(((resource: Product | Scene) => {
 
-                if(isAScene(resource) && JSON.stringify(resource).includes("debugger") && !resourcesIdsWithBreakpoints.find(elem => elem.type == ProductResouceType.Scene && elem.id == resource.id)) {
+                if (isAScene(resource) && isStringContains(JSON.stringify(resource), state.params) && !resourcesIdsWithBreakpoints.find(elem => elem.type == ProductResouceType.Scene && elem.id == resource.id)) {
                     //scene
                     resourceWithBreakpoints.push({
                         type: ProductResouceType.Scene,
                         id: resource.id
                     });
                 }
-                else if (!isAScene(resource) && JSON.stringify(resource).includes("debugger") && !resourcesIdsWithBreakpoints.find(elem => elem.type == ProductResouceType.Product && elem.id == resource.id)){
+                else if (!isAScene(resource) && isStringContains(JSON.stringify(resource), state.params) && !resourcesIdsWithBreakpoints.find(elem => elem.type == ProductResouceType.Product && elem.id == resource.id)) {
                     //product
                     resourceWithBreakpoints.push({
                         type: ProductResouceType.Product,
                         id: resource.id
                     });
                 }
-                
+
             }));
 
             setResourcesIdsWithBreakpoints([...resourcesIdsWithBreakpoints, ...resourceWithBreakpoints]);
@@ -118,7 +133,7 @@ export default function FindBreakpoints() {
             then(tabs => {
                 if (tabs[0].url) {
                     const companyUrl = tabs[0].url.split(".com")[0] + ".com";
-                    if(product.type == ProductResouceType.Scene) chrome.tabs.create({ url: companyUrl + "/admin/scenes/" + product.id, active: false });
+                    if (product.type == ProductResouceType.Scene) chrome.tabs.create({ url: companyUrl + "/admin/scenes/" + product.id, active: false });
                     else chrome.tabs.create({ url: companyUrl + "/admin/configurators/" + product.id, active: false });
                 }
             })
@@ -132,28 +147,25 @@ export default function FindBreakpoints() {
                     <Input type='number' value={configId} onChange={(e) => setConfigId(+e.target.value)} />
                 </FormControl>
             </Center>
-            {
-                (resourcesIdsWithBreakpoints.length > 0) ?
-                    <Card padding={5}>
-                        <FormControl >
-                            <FormLabel>Configurators with breakpoints:</FormLabel>
-                            <List spacing={3}>
-                                {
-                                    resourcesIdsWithBreakpoints.map((resource) =>
-                                        <ListItem>
-                                            <ListIcon as={CheckCircleIcon} color='green.500' />
-                                            {resource.type + ": " + resource.id + "====> "} <Link onClick={() => openBackgroundTabProduct(resource)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
-                                        </ListItem>
-                                    )
-                                }
-                            </List>
-                        </FormControl>
-                    </Card>
-                    :
-                    <></>
-            }
+
+            <Card padding={5} minW={90}>
+                <FormControl >
+                    <FormLabel>Resources:</FormLabel>
+                    <List spacing={3}>
+                        {
+                            resourcesIdsWithBreakpoints.map((resource) =>
+                                <ListItem>
+                                    <ListIcon as={CheckCircleIcon} color='green.500' />
+                                    {resource.type + ": " + resource.id + " ====> "} <Link onClick={() => openBackgroundTabProduct(resource)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                </ListItem>
+                            )
+                        }
+                    </List>
+                </FormControl>
+            </Card>
+
             <Center>
-                <CustomButton w={"100%"} margin={3} onClick={handleFindBreakpoints} isLoading={loading}>Find Breakpoints</CustomButton>
+                <CustomButton w={"100%"} margin={3} onClick={handleFindBreakpoints} isLoading={loading}>Find</CustomButton>
             </Center>
         </VStack>
 

@@ -6,6 +6,9 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import ExpanderTool from "../components/ExpanderTool";
+//Ideas to add
+// To Add: E' usato il config da qualcuno (e' nested)?
+// To add: la tabella da chi e' usata?
 
 const ToolsList = [
     {
@@ -24,13 +27,15 @@ const ToolsList = [
         name: "Find breakpoints",
         description:
             "When you have very complex projects it can happen that you lose breakpoints around, making debugging a difficult task, this tool helps you find them",
-        route: "/tools/findBreakpoints"
+        route: "/tools/findBreakpoints",
+        param: ["debugger"]
     },
     {
         name: "Find write log",
         description:
-            "TODO: Often finding all the 'write logs' in a project is complicated when there start to be several configurators, this tool helps you find them all",
-        route: ""
+            "Often finding all the 'write logs' in a project is complicated when there start to be several configurators, this tool helps you find them all",
+        route: "/tools/findWriteLog",
+        param: ["console.log", "e.logs.push"]
     },
     {
         name: "Clean Scene's materials",
@@ -47,7 +52,11 @@ export default function ToolsPage() {
                     <ExpanderTool
                         name={tool.name}
                         description={tool.description}
-                        onClick={() => navigate(tool.route)}
+                        onClick={() => navigate(tool.route, {
+                            state: {
+                                params: tool.param
+                            }
+                        })}
                     />
                 ))}
             </Accordion>
