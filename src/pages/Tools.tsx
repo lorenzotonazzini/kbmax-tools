@@ -18,10 +18,28 @@ const ToolsList = [
         route: "/tools/loadFromExcel"
     },
     {
-        name: "Table Reference",
+        name: "Table References",
         description:
-            "If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it",
+            "If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it (configurators, scenes, safe functions and quote headers!)",
         route: "/tools/tableReference"
+    },
+    {
+        name: "Configurator References",
+        description:
+            "TODO: Find out where a configurator is being used (as nested in another configurator or in a scene)",
+        route: ""
+    },
+    {
+        name: "Scene References",
+        description:
+            "TODO: Find out where a scene is referenced",
+        route: ""
+    },
+    {
+        name: "Safe Function References",
+        description:
+            "TODO: Find out where a safe function is used",
+        route: ""
     },
     {
         name: "Find breakpoints",
@@ -31,17 +49,12 @@ const ToolsList = [
         param: ["debugger"]
     },
     {
-        name: "Find write log",
+        name: "Find write-logs",
         description:
             "Often finding all the 'write logs' in a project is complicated when there start to be several configurators, this tool helps you find them all",
         route: "/tools/findWriteLog",
         param: ["console.log", "e.logs.push"]
-    },
-    {
-        name: "Clean Scene's materials",
-        description: "TODO",
-        route: ""
-    },
+    }
 ];
 export default function ToolsPage() {
     const navigate = useNavigate();
