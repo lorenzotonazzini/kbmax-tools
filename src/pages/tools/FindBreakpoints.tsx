@@ -16,7 +16,9 @@ import { CheckCircleIcon, ExternalLinkIcon } from '@chakra-ui/icons'
 
 import CustomButton from "../../components/CustomButton";
 import { useFetch } from "../../hooks/useFetch";
-import Product from "../../interfaces/Product";
+import Product, { ProductReferencedResource, ProductResouceType } from "../../interfaces/Product";
+import { Scene } from "../../interfaces/Scene";
+
 
 export default function FindBreakpoints() {
 
@@ -24,9 +26,9 @@ export default function FindBreakpoints() {
 
     const { multipleFetchGet, multipleFetchData, error, loading } = useFetch();
 
-    const [analysedIds, setAnalysedIds] = React.useState([] as number[]);
+    const [analysedIds, setAnalysedIds] = React.useState([] as ProductReferencedResource[]);
 
-    const [productsIdsWithBreakpoints, setProductsIdsWithBreakpoints] = React.useState([] as number[]);
+    const [resourcesIdsWithBreakpoints, setResourcesIdsWithBreakpoints] = React.useState([] as ProductReferencedResource[]);
 
     //get page url
     React.useEffect(() => {
@@ -40,59 +42,84 @@ export default function FindBreakpoints() {
     }, []);
 
     const handleFindBreakpoints = async () => {
-        getConfigs([configId]);
+        getResource([{
+            type: ProductResouceType.Product,
+            id: configId
+        }]);
     }
 
-    const getConfigs = (ids: number[]) => {
-        multipleFetchGet(ids.map(id => "/api/admin/products/" + id))
+    const getResource = (resources: ProductReferencedResource[]) => {
+        multipleFetchGet(resources.map(resource => (resource.type == ProductResouceType.Product) ? "/api/admin/products/" + resource.id : "/api/scenes/" + resource.id))
     }
 
     React.useEffect(() => {
         if (multipleFetchData.length > 0) {
 
-            const referencedIds = [] as number[];
+            const referencedIds = [] as ProductReferencedResource[];
+
             //get referenced configurators
             (multipleFetchData as Product[]).map(product => {
                 product.references.map((reference) => {
-                    if (reference.type == "Product" && !analysedIds.includes(reference.id)) {
-                        referencedIds.push(reference.id);
+                    if (reference.type == ProductResouceType.Product && !analysedIds.find(elem => elem.type == ProductResouceType.Product && elem.id == reference.id)) {
+                        referencedIds.push(reference);
+                    }
+                    else if (reference.type == ProductResouceType.Scene && !analysedIds.find(elem => elem.type == ProductResouceType.Scene && elem.id == reference.id)) {
+                        referencedIds.push(reference)
                     }
                 })
             })
 
             //to anlyse
-            const toAnalyse = [] as number[];
+            const toAnalyse = [] as ProductReferencedResource[];
             referencedIds.map((id) => {
                 if (!analysedIds.includes(id)) toAnalyse.push(id)
             })
 
             //analyse
-            getConfigs(toAnalyse);
+            getResource(toAnalyse);
 
             //analysed 
             setAnalysedIds([...analysedIds, ...referencedIds])
 
 
-            const productWithBreakpoints = [] as number[];
+            const isAScene = (obj: any): obj is Scene => {
+                return 'id' in obj && 'graph' in obj;
+              }
+
+            const resourceWithBreakpoints = [] as ProductReferencedResource[];
             //check if they contains breakpoints
-            multipleFetchData.map(((product: Product) => {
-                if (JSON.stringify(product).includes("debugger") && !productsIdsWithBreakpoints.includes(product.id)) {
-                    productWithBreakpoints.push(product.id);
+            multipleFetchData.map(((resource: Product | Scene) => {
+
+                if(isAScene(resource) && JSON.stringify(resource).includes("debugger") && !resourcesIdsWithBreakpoints.find(elem => elem.type == ProductResouceType.Scene && elem.id == resource.id)) {
+                    //scene
+                    resourceWithBreakpoints.push({
+                        type: ProductResouceType.Scene,
+                        id: resource.id
+                    });
                 }
+                else if (!isAScene(resource) && JSON.stringify(resource).includes("debugger") && !resourcesIdsWithBreakpoints.find(elem => elem.type == ProductResouceType.Product && elem.id == resource.id)){
+                    //product
+                    resourceWithBreakpoints.push({
+                        type: ProductResouceType.Product,
+                        id: resource.id
+                    });
+                }
+                
             }));
 
-            setProductsIdsWithBreakpoints([...productsIdsWithBreakpoints, ...productWithBreakpoints]);
+            setResourcesIdsWithBreakpoints([...resourcesIdsWithBreakpoints, ...resourceWithBreakpoints]);
 
         }
     }, [multipleFetchGet]);
 
 
-    const openBackgroundTabProduct = async (id: number) => {
+    const openBackgroundTabProduct = async (product: ProductReferencedResource) => {
         chrome.tabs.query({ currentWindow: true, active: true }).
             then(tabs => {
                 if (tabs[0].url) {
                     const companyUrl = tabs[0].url.split(".com")[0] + ".com";
-                    chrome.tabs.create({ url: companyUrl + "/admin/configurators/" + id, active: false });
+                    if(product.type == ProductResouceType.Scene) chrome.tabs.create({ url: companyUrl + "/admin/scenes/" + product.id, active: false });
+                    else chrome.tabs.create({ url: companyUrl + "/admin/configurators/" + product.id, active: false });
                 }
             })
     }
@@ -106,16 +133,16 @@ export default function FindBreakpoints() {
                 </FormControl>
             </Center>
             {
-                (productsIdsWithBreakpoints.length > 0) ?
+                (resourcesIdsWithBreakpoints.length > 0) ?
                     <Card padding={5}>
                         <FormControl >
                             <FormLabel>Configurators with breakpoints:</FormLabel>
                             <List spacing={3}>
                                 {
-                                    productsIdsWithBreakpoints.map((prodId) =>
+                                    resourcesIdsWithBreakpoints.map((resource) =>
                                         <ListItem>
                                             <ListIcon as={CheckCircleIcon} color='green.500' />
-                                            {prodId + "====> "} <Link onClick={() => openBackgroundTabProduct(prodId)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                            {resource.type + ": " + resource.id + "====> "} <Link onClick={() => openBackgroundTabProduct(resource)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
                                         </ListItem>
                                     )
                                 }

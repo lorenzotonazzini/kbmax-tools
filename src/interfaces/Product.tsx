@@ -1,8 +1,15 @@
-interface ReferencedProduct {
-    id: number,
-    type: string
+
+export enum ProductResouceType {
+    Product = "Product",
+    Scene = "Scene"
 }
+
+export interface ProductReferencedResource {
+    id: number,
+    type: ProductResouceType
+}
+
 export default interface Product {
-    references: ReferencedProduct[],
+    references: ProductReferencedResource[],
     id: number
 }
