@@ -248,7 +248,7 @@ export default function TableReference() {
                             )
                         }
                         {
-                            configs.length == 0 ? <>Empty</> : <></>
+                            configs.length == 0 ? <>No resources found</> : <></>
                         }
                     </List>
                 </FormControl>
@@ -267,7 +267,7 @@ export default function TableReference() {
                             )
                         }
                         {
-                            scenes.length == 0 ? <>Empty</> : <></>
+                            scenes.length == 0 ? <>No resources found</> : <></>
                         }
                     </List>
                 </FormControl>
@@ -286,7 +286,7 @@ export default function TableReference() {
                             )
                         }
                         {
-                            safeFunctions.length == 0 ? <>Empty</> : <></>
+                            safeFunctions.length == 0 ? <>No resources found</> : <></>
                         }
                     </List>
                 </FormControl>
@@ -305,7 +305,7 @@ export default function TableReference() {
                             )
                         }
                         {
-                            quoteHeaders.length == 0 ? <>Empty</> : <></>
+                            quoteHeaders.length == 0 ? <>No resources found</> : <></>
                         }
                     </List>
                 </FormControl>
