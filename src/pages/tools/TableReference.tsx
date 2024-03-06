@@ -19,8 +19,9 @@ import { useLocation } from "react-router-dom";
 
 import CustomButton from "../../components/CustomButton";
 import { useFetch } from "../../hooks/useFetch";
-import Product, { ProductReferencedResource, ProductResouceType } from "../../interfaces/Product";
+import Product, { ProductResouceType } from "../../interfaces/Product";
 import { Scene } from "../../interfaces/Scene";
+import { SafeFunction } from "../../interfaces/SafeFunctions";
 
 interface ElemTypesToCheck {
     products: boolean,
@@ -38,6 +39,9 @@ export default function TableReference() {
 
     const [scenesAnalysedNumber, setScenesAnalysedNumber] = React.useState(0);
     const [scenes, setScenes] = React.useState([] as Scene[]);
+
+    const [safeFunctionsAnalysedNumber, setSafeFunctionsAnalysedNumber] = React.useState(0);
+    const [safeFunctions, setSafeFunctions] = React.useState([] as SafeFunction[]);
 
     const [checkedTypes, setCheckedTypes] = React.useState({
         products: false,
@@ -87,7 +91,13 @@ export default function TableReference() {
         }
         //safe functions
         else if (!checkedTypes.safeFunctions) {
-
+            doFetchPost("/api/functions/search", {
+                fields: ["id", "references"],
+                sortField: "id",
+                descending: true,
+                skip: safeFunctionsAnalysedNumber,
+                take: 1000
+            });
         }
         //quote header
         else if (!checkedTypes.quoteHeader) {
@@ -95,17 +105,14 @@ export default function TableReference() {
         }
     }
     React.useEffect(() => {
-        if(search) handleFindTableReference();
+        if (search) handleFindTableReference();
     }, [configsAnalysedNumber, scenesAnalysedNumber, checkedTypes]);
 
     React.useEffect(() => {
         //
-        console.log("fetchData updated", fetchData)
         if (fetchData && (fetchData as any[]).length > 0) {
             //Products
             if (!checkedTypes.products) {
-                console.log("Product fetched, skipped", configsAnalysedNumber);
-                //console.log("Product fetched, returned: ", fetchData);
                 const products = (fetchData as Product[]);
                 products.map(product => {
                     //analyse references
@@ -123,8 +130,6 @@ export default function TableReference() {
             }
             // Scenes
             else if (!checkedTypes.scenes) {
-                console.log("Scene fetched");
-                //console.log("Scene fetched, returned: ", fetchData);
                 const scenesToAnalyse = (fetchData as Scene[]);
                 scenesToAnalyse.map(sceneToAnalyse => {
                     //analyse references
@@ -141,7 +146,19 @@ export default function TableReference() {
             }
             //safe functions
             else if (!checkedTypes.safeFunctions) {
-
+                const safeFunctionsToAnalyse = (fetchData as SafeFunction[]);
+                safeFunctionsToAnalyse.map(safeFunctionToAnalyse => {
+                    //analyse references
+                    if (safeFunctionToAnalyse.references) {
+                        safeFunctionToAnalyse.references.map(ref => {
+                            if (ref.type == ProductResouceType.Table && ref.id == tableId && !scenes.find(config => config.id == safeFunctionToAnalyse.id)) {
+                                safeFunctions.push(safeFunctionToAnalyse);
+                            }
+                        })
+                    }
+                })
+                setSafeFunctionsAnalysedNumber(safeFunctionsAnalysedNumber + safeFunctionsToAnalyse.length);
+                setSafeFunctions([...safeFunctions]);
             }
             //quote header
             else if (!checkedTypes.quoteHeader) {
@@ -176,22 +193,12 @@ export default function TableReference() {
         }
     }, [fetchData]);
 
-    const openBackgroundTabProduct = async (product: Product) => {
+    const openBackgroundTabResource = async (id: number, resourcePath: string) => {
         chrome.tabs.query({ currentWindow: true, active: true }).
             then(tabs => {
                 if (tabs[0].url) {
                     const companyUrl = tabs[0].url.split(".com")[0] + ".com";
-                    chrome.tabs.create({ url: companyUrl + "/admin/configurators/" + product.id, active: false });
-                }
-            })
-    }
-
-    const openBackgroundTabScene = async (scene: Scene) => {
-        chrome.tabs.query({ currentWindow: true, active: true }).
-            then(tabs => {
-                if (tabs[0].url) {
-                    const companyUrl = tabs[0].url.split(".com")[0] + ".com";
-                    chrome.tabs.create({ url: companyUrl + "/admin/scenes/" + scene.id, active: false });
+                    chrome.tabs.create({ url: companyUrl + resourcePath + id, active: false });
                 }
             })
     }
@@ -213,7 +220,7 @@ export default function TableReference() {
                             configs.map((config) =>
                                 <ListItem>
                                     <ListIcon as={CheckCircleIcon} color='green.500' />
-                                    {config.id + " ====> "} <Link onClick={() => openBackgroundTabProduct(config)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                    {config.id + " ====> "} <Link onClick={() => openBackgroundTabResource(config.id, "/admin/configurators/")} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
                                 </ListItem>
                             )
                         }
@@ -229,7 +236,23 @@ export default function TableReference() {
                             scenes.map((scene) =>
                                 <ListItem>
                                     <ListIcon as={CheckCircleIcon} color='green.500' />
-                                    {scene.id + " ====> "} <Link onClick={() => openBackgroundTabScene(scene)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                    {scene.id + " ====> "} <Link onClick={() => openBackgroundTabResource(scene.id, "/admin/scenes/")} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                </ListItem>
+                            )
+                        }
+                    </List>
+                </FormControl>
+            </Card>
+
+            <Card padding={5} minW={90}>
+                <FormControl >
+                    <FormLabel>Safe Functions:</FormLabel>
+                    <List spacing={3}>
+                        {
+                            safeFunctions.map((safeFunction) =>
+                                <ListItem>
+                                    <ListIcon as={CheckCircleIcon} color='green.500' />
+                                    {safeFunction.id + " ====> "} <Link onClick={() => openBackgroundTabResource(safeFunction.id, "/admin/safe-functions/")} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
                                 </ListItem>
                             )
                         }

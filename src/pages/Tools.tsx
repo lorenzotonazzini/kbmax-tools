@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import ExpanderTool from "../components/ExpanderTool";
 //Ideas to add
 // To Add: E' usato il config da qualcuno (e' nested)?
-// To add: la tabella da chi e' usata?
+// To add: Le safe function sono usate da qualcuno?
 
 const ToolsList = [
     {
@@ -20,7 +20,7 @@ const ToolsList = [
     {
         name: "Table Reference",
         description:
-            "TODO: If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it",
+            "If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it",
         route: "/tools/tableReference"
     },
     {
