@@ -44,8 +44,6 @@ export default function FindInResources() {
                 if (numbersInUrl) setConfigId(+numbersInUrl[0])
             }
         })
-
-        console.log(state)
     }, []);
 
     const handleFindBreakpoints = async () => {

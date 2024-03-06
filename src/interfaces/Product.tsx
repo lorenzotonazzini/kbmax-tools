@@ -1,7 +1,8 @@
 
 export enum ProductResouceType {
     Product = "Product",
-    Scene = "Scene"
+    Scene = "Scene",
+    Table = "Table"
 }
 
 export interface ProductReferencedResource {

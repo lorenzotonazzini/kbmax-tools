@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Tools from "./pages/Tools";
 import UploadFromExcelsTables from "./pages/tools/UploadFromExcelsTables";
 import FindInResources from "./pages/tools/FindInResources";
+import TableReference from "./pages/tools/TableReference";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/tools/loadFromExcel" element={<UploadFromExcelsTables />} />
         <Route path="/tools/findBreakpoints" element={<FindInResources />} />
         <Route path="/tools/findWriteLog" element={<FindInResources />} />
+        <Route path="/tools/tableReference" element={<TableReference />} />
       </Routes>
     </MemoryRouter >
   );
