@@ -3,13 +3,13 @@ A set of useful tools for KBMax (Epicor CPQ)
 
 ## List of tools
 
-### Upload tables from excel
-### Table references
-### TODO: Configurator references
-### TODO: Scene references
-### TODO: Safe function references
-### Find breakpoints
-### Find write-logs
+#### Upload tables from excel
+#### Table references
+#### TODO: Configurator references
+#### TODO: Scene references
+#### TODO: Safe function references
+#### Find breakpoints
+#### Find write-logs
 
 ## How to build
 This project is an extension for Chrome, to add it you must install all the dependencies:
