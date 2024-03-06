@@ -23,7 +23,7 @@ const ToolsList = [
     {
         name: "Find breakpoints",
         description:
-            "TODO: When you have very complex projects it can happen that you lose breakpoints around, making debugging a difficult task, this tool helps you find them",
+            "When you have very complex projects it can happen that you lose breakpoints around, making debugging a difficult task, this tool helps you find them",
         route: "/tools/findBreakpoints"
     },
     {

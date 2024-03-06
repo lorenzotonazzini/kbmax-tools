@@ -2,22 +2,21 @@ import React from "react"
 import {
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
     Input,
     Center,
-    VStack
+    VStack,
+    List,
+    ListItem,
+    ListIcon,
+    Card,
+    UnorderedList,
+    Link
 } from '@chakra-ui/react'
+import { CheckCircleIcon, ExternalLinkIcon } from '@chakra-ui/icons'
+
 import CustomButton from "../../components/CustomButton";
 import { useFetch } from "../../hooks/useFetch";
-
-interface ReferencedProduct {
-    id: number,
-    type: string
-}
-interface Product {
-    references: ReferencedProduct[]
-}
+import Product from "../../interfaces/Product";
 
 export default function FindBreakpoints() {
 
@@ -26,6 +25,8 @@ export default function FindBreakpoints() {
     const { multipleFetchGet, multipleFetchData, error, loading } = useFetch();
 
     const [analysedIds, setAnalysedIds] = React.useState([] as number[]);
+
+    const [productsIdsWithBreakpoints, setProductsIdsWithBreakpoints] = React.useState([] as number[]);
 
     //get page url
     React.useEffect(() => {
@@ -70,17 +71,60 @@ export default function FindBreakpoints() {
 
             //analysed 
             setAnalysedIds([...analysedIds, ...referencedIds])
+
+
+            const productWithBreakpoints = [] as number[];
+            //check if they contains breakpoints
+            multipleFetchData.map(((product: Product) => {
+                if (JSON.stringify(product).includes("debugger") && !productsIdsWithBreakpoints.includes(product.id)) {
+                    productWithBreakpoints.push(product.id);
+                }
+            }));
+
+            setProductsIdsWithBreakpoints([...productsIdsWithBreakpoints, ...productWithBreakpoints]);
+
         }
     }, [multipleFetchGet]);
+
+
+    const openBackgroundTabProduct = async (id: number) => {
+        chrome.tabs.query({ currentWindow: true, active: true }).
+            then(tabs => {
+                if (tabs[0].url) {
+                    const companyUrl = tabs[0].url.split(".com")[0] + ".com";
+                    chrome.tabs.create({ url: companyUrl + "/admin/configurators/" + id, active: false });
+                }
+            })
+    }
 
     return (
         <VStack spacing={5} w={500}>
             <Center>
-                <FormControl padding={10}>
+                <FormControl padding={10} paddingBottom={3}>
                     <FormLabel>Parent configurator Id</FormLabel>
                     <Input type='number' value={configId} onChange={(e) => setConfigId(+e.target.value)} />
                 </FormControl>
             </Center>
+            {
+                (productsIdsWithBreakpoints.length > 0) ?
+                    <Card padding={5}>
+                        <FormControl >
+                            <FormLabel>Configurators with breakpoints:</FormLabel>
+                            <List spacing={3}>
+                                {
+                                    productsIdsWithBreakpoints.map((prodId) =>
+                                        <ListItem>
+                                            <ListIcon as={CheckCircleIcon} color='green.500' />
+                                            {prodId + "====> "} <Link onClick={() => openBackgroundTabProduct(prodId)} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                        </ListItem>
+                                    )
+                                }
+                            </List>
+                        </FormControl>
+                    </Card>
+                    :
+                    <></>
+            }
             <Center>
                 <CustomButton w={"100%"} margin={3} onClick={handleFindBreakpoints} isLoading={loading}>Find Breakpoints</CustomButton>
             </Center>

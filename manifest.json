@@ -7,6 +7,6 @@
     "default_popup": "js/index.html",
     "default_title": "KBMax Tools"
   },
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "tabs"],
   "host_permissions": ["*://*.kbmax.com/*"]
 }
