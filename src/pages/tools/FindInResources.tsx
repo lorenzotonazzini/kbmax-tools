@@ -146,7 +146,7 @@ export default function FindInResources() {
                 </FormControl>
             </Center>
 
-            <Card padding={5} minW={90}>
+            <Card padding={5} w={"90%"}>
                 <FormControl >
                     <FormLabel>Resources:</FormLabel>
                     <List spacing={3}>

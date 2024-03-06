@@ -22,6 +22,7 @@ import { useFetch } from "../../hooks/useFetch";
 import Product, { ProductResouceType } from "../../interfaces/Product";
 import { Scene } from "../../interfaces/Scene";
 import { SafeFunction } from "../../interfaces/SafeFunctions";
+import QuoteHeader from "../../interfaces/QuoteHeader";
 
 interface ElemTypesToCheck {
     products: boolean,
@@ -34,15 +35,22 @@ export default function TableReference() {
     const { fetchData, doFetchPost, multipleFetchGet, multipleFetchData, error, loading } = useFetch();
     const [tableId, setTableId] = React.useState(0);
 
+    //configs
     const [configsAnalysedNumber, setConfigsAnalysedNumber] = React.useState(0);
     const [configs, setConfigs] = React.useState([] as Product[]);
 
+    //scenes
     const [scenesAnalysedNumber, setScenesAnalysedNumber] = React.useState(0);
     const [scenes, setScenes] = React.useState([] as Scene[]);
 
+    //safe functions
     const [safeFunctionsAnalysedNumber, setSafeFunctionsAnalysedNumber] = React.useState(0);
     const [safeFunctions, setSafeFunctions] = React.useState([] as SafeFunction[]);
 
+    //quote headers
+    const [quoteHeadersAnalysedNumber, setQuoteHeadersAnalysedNumber] = React.useState(0);
+    const [quoteHeaders, setQuoteHeaders] = React.useState([] as QuoteHeader[]);
+    //
     const [checkedTypes, setCheckedTypes] = React.useState({
         products: false,
         scenes: false,
@@ -101,12 +109,18 @@ export default function TableReference() {
         }
         //quote header
         else if (!checkedTypes.quoteHeader) {
-
+            doFetchPost("/api/quoteheaders/search", {
+                fields: ["id", "references"],
+                sortField: "id",
+                descending: true,
+                skip: quoteHeadersAnalysedNumber,
+                take: 1000
+            });
         }
     }
     React.useEffect(() => {
         if (search) handleFindTableReference();
-    }, [configsAnalysedNumber, scenesAnalysedNumber, checkedTypes]);
+    }, [configsAnalysedNumber, scenesAnalysedNumber, safeFunctionsAnalysedNumber, quoteHeadersAnalysedNumber, checkedTypes]);
 
     React.useEffect(() => {
         //
@@ -135,7 +149,7 @@ export default function TableReference() {
                     //analyse references
                     if (sceneToAnalyse.references) {
                         sceneToAnalyse.references.map(ref => {
-                            if (ref.type == ProductResouceType.Table && ref.id == tableId && !scenes.find(config => config.id == sceneToAnalyse.id)) {
+                            if (ref.type == ProductResouceType.Table && ref.id == tableId && !scenes.find(scene => scene.id == sceneToAnalyse.id)) {
                                 scenes.push(sceneToAnalyse);
                             }
                         })
@@ -151,7 +165,7 @@ export default function TableReference() {
                     //analyse references
                     if (safeFunctionToAnalyse.references) {
                         safeFunctionToAnalyse.references.map(ref => {
-                            if (ref.type == ProductResouceType.Table && ref.id == tableId && !scenes.find(config => config.id == safeFunctionToAnalyse.id)) {
+                            if (ref.type == ProductResouceType.Table && ref.id == tableId && !safeFunctions.find(safeFunction => safeFunction.id == safeFunctionToAnalyse.id)) {
                                 safeFunctions.push(safeFunctionToAnalyse);
                             }
                         })
@@ -162,13 +176,22 @@ export default function TableReference() {
             }
             //quote header
             else if (!checkedTypes.quoteHeader) {
-
+                const quoteHeadersToAnalyse = (fetchData as QuoteHeader[]);
+                quoteHeadersToAnalyse.map(quoteHeaderToAnalyse => {
+                    //analyse references
+                    if (quoteHeaderToAnalyse.references) {
+                        quoteHeaderToAnalyse.references.map(ref => {
+                            if (ref.type == ProductResouceType.Table && ref.id == tableId && !quoteHeaders.find(quoteHeader => quoteHeader.id == quoteHeaderToAnalyse.id)) {
+                                quoteHeaders.push(quoteHeaderToAnalyse);
+                            }
+                        })
+                    }
+                })
+                setQuoteHeadersAnalysedNumber(quoteHeadersAnalysedNumber + quoteHeadersToAnalyse.length);
+                setQuoteHeaders([...quoteHeaders]);
             }
         }
         else if (fetchData && (fetchData as any[]).length == 0) {
-
-            console.log("finished")
-            const elemTypeToDo = checkedTypes;
 
             //Products
             if (!checkedTypes.products) {
@@ -212,7 +235,7 @@ export default function TableReference() {
                 </FormControl>
             </Center>
 
-            <Card padding={5} minW={90}>
+            <Card padding={5} w={"90%"}>
                 <FormControl >
                     <FormLabel>Configurators:</FormLabel>
                     <List spacing={3}>
@@ -224,11 +247,14 @@ export default function TableReference() {
                                 </ListItem>
                             )
                         }
+                        {
+                            configs.length == 0 ? <>Empty</> : <></>
+                        }
                     </List>
                 </FormControl>
             </Card>
 
-            <Card padding={5} minW={90}>
+            <Card padding={5} w={"90%"}>
                 <FormControl >
                     <FormLabel>Scenes:</FormLabel>
                     <List spacing={3}>
@@ -244,7 +270,7 @@ export default function TableReference() {
                 </FormControl>
             </Card>
 
-            <Card padding={5} minW={90}>
+            <Card padding={5} w={"90%"}>
                 <FormControl >
                     <FormLabel>Safe Functions:</FormLabel>
                     <List spacing={3}>
@@ -253,6 +279,22 @@ export default function TableReference() {
                                 <ListItem>
                                     <ListIcon as={CheckCircleIcon} color='green.500' />
                                     {safeFunction.id + " ====> "} <Link onClick={() => openBackgroundTabResource(safeFunction.id, "/admin/safe-functions/")} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
+                                </ListItem>
+                            )
+                        }
+                    </List>
+                </FormControl>
+            </Card>
+
+            <Card padding={5} w={"90%"}>
+                <FormControl >
+                    <FormLabel>Quote Headers:</FormLabel>
+                    <List spacing={3}>
+                        {
+                            quoteHeaders.map((quoteHeader) =>
+                                <ListItem>
+                                    <ListIcon as={CheckCircleIcon} color='green.500' />
+                                    {quoteHeader.id + " ====> "} <Link onClick={() => openBackgroundTabResource(quoteHeader.id, "/admin/quote-headers/")} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
                                 </ListItem>
                             )
                         }
