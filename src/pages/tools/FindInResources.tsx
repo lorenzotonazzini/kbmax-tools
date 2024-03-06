@@ -158,6 +158,9 @@ export default function FindInResources() {
                                 </ListItem>
                             )
                         }
+                        {
+                            resourcesIdsWithBreakpoints.length == 0 ? <>No resources found</> : <></>
+                        }
                     </List>
                 </FormControl>
             </Card>

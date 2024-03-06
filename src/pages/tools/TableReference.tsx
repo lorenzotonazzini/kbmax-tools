@@ -266,6 +266,9 @@ export default function TableReference() {
                                 </ListItem>
                             )
                         }
+                        {
+                            scenes.length == 0 ? <>Empty</> : <></>
+                        }
                     </List>
                 </FormControl>
             </Card>
@@ -282,6 +285,9 @@ export default function TableReference() {
                                 </ListItem>
                             )
                         }
+                        {
+                            safeFunctions.length == 0 ? <>Empty</> : <></>
+                        }
                     </List>
                 </FormControl>
             </Card>
@@ -297,6 +303,9 @@ export default function TableReference() {
                                     {quoteHeader.id + " ====> "} <Link onClick={() => openBackgroundTabResource(quoteHeader.id, "/admin/quote-headers/")} isExternal>Open <ExternalLinkIcon mx='2px' /></Link>
                                 </ListItem>
                             )
+                        }
+                        {
+                            quoteHeaders.length == 0 ? <>Empty</> : <></>
                         }
                     </List>
                 </FormControl>
