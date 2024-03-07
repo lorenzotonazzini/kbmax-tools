@@ -12,6 +12,7 @@ A set of useful tools for KBMax (Epicor CPQ)
 #### Find breakpoints
 #### Find write-logs
 
+
 ## How to build
 This project is an extension for Chrome, to add it you must install all the dependencies:
 
