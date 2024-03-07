@@ -22,7 +22,7 @@ const ToolsList = [
         route: "/tools/findReferences",
         param: {
             type: ResouceType.Table,
-            searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader]
+            searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader, ResourceSearchAPI.QuoteOutput]
         }
     },
     {
@@ -52,7 +52,7 @@ const ToolsList = [
         route: "/tools/findReferences",
         param: {
             type: ResouceType.SafeFunction,
-            searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader, ResourceSearchAPI.WorkFlow, ResourceSearchAPI.CustomAction]
+            searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader, , ResourceSearchAPI.QuoteOutput, ResourceSearchAPI.WorkFlow, ResourceSearchAPI.CustomAction]
         }
     },
     {
