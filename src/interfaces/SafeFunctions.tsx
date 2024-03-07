@@ -1,6 +1,7 @@
-import { ProductReferencedResource } from "./Product";
+import { ReferencedResource } from "./Resources";
+
 
 export interface SafeFunction {
     id: number,
-    references: ProductReferencedResource[],
+    references: ReferencedResource[],
 }

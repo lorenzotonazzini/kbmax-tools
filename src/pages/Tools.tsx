@@ -6,9 +6,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import ExpanderTool from "../components/ExpanderTool";
-//Ideas to add
-// To Add: E' usato il config da qualcuno (e' nested)?
-// To add: Le safe function sono usate da qualcuno?
+import { ResouceType, ResourceSearchAPI } from '../interfaces/Resources';
 
 const ToolsList = [
     {
@@ -21,25 +19,37 @@ const ToolsList = [
         name: "Table References",
         description:
             "If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it (configurators, scenes, safe functions and quote headers!)",
-        route: "/tools/tableReference"
+        route: "/tools/findReferences",
+        param: {
+            type: ResouceType.Table,
+            searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader]
+        }
     },
     {
         name: "Configurator References",
         description:
-            "TODO: Find out where a configurator is being used (as nested in another configurator or in a scene)",
-        route: ""
+            "Find out where a configurator is being used (as nested in another configurator)",
+        route: "/tools/findReferences",
+        param: {
+            type: ResouceType.Product,
+            searchIn: [ResourceSearchAPI.Products]
+        }
     },
     {
         name: "Scene References",
         description:
-            "TODO: Find out where a scene is referenced",
-        route: ""
+            "Find out where a scene is referenced",
+        route: "/tools/findReferences",
+        param: {
+            type: ResouceType.Scene,
+            searchIn: [ResourceSearchAPI.Products]
+        }
     },
     {
-        name: "Safe Function References",
+        name: "TODO: Safe Function References",
         description:
             "TODO: Find out where a safe function is used",
-        route: ""
+        route: "",
     },
     {
         name: "Find breakpoints",
