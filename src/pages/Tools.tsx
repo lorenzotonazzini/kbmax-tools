@@ -46,10 +46,14 @@ const ToolsList = [
         }
     },
     {
-        name: "TODO: Safe Function References",
+        name: "Safe Function References",
         description:
-            "TODO: Find out where a safe function is used",
-        route: "",
+            "Find out where a safe function is used",
+        route: "/tools/findReferences",
+        param: {
+            type: ResouceType.SafeFunction,
+            searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader, ResourceSearchAPI.WorkFlow, ResourceSearchAPI.CustomAction]
+        }
     },
     {
         name: "Find breakpoints",

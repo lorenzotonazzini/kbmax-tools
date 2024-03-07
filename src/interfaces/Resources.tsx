@@ -2,15 +2,19 @@ export enum ResouceType {
     Product = "Product",
     Scene = "Scene",
     Table = "Table",
-    SafeFunction = "Safe Function",
-    QuoteHeader = "Quote Header"
+    SafeFunction = "SafeFunction",
+    QuoteHeader = "Quote Header",
+    WorkFlow = "Workflow",
+    CustomAction = "Custom Action"
 }
 
 export enum ResourceLocation {
     Product = "/admin/configurators/",
     Scene = "/admin/scenes/",
     SafeFunction = "/admin/safe-functions/",
-    QuoteHeader = "/admin/quote-headers/"
+    QuoteHeader = "/admin/quote-headers/",
+    WorkFlow = "/admin/workflows/",
+    CustomAction = "/admin/custom-actions/"
 }
 
 export interface ResourceAPI {
@@ -24,6 +28,8 @@ export class ResourceSearchAPI {
     static readonly Scenes: ResourceAPI = { type: ResouceType.Scene, api: "/api/scenes/search", resourceLoationPath: ResourceLocation.Scene }
     static readonly SafeFunctions: ResourceAPI = { type: ResouceType.SafeFunction, api: "/api/functions/search", resourceLoationPath: ResourceLocation.SafeFunction }
     static readonly QuoteHeader: ResourceAPI = { type: ResouceType.QuoteHeader, api: "/api/quoteheaders/search", resourceLoationPath: ResourceLocation.QuoteHeader }
+    static readonly WorkFlow: ResourceAPI = { type: ResouceType.WorkFlow, api: "/api/workflows/search", resourceLoationPath: ResourceLocation.WorkFlow }
+    static readonly CustomAction: ResourceAPI = { type: ResouceType.CustomAction, api: "/api/customactions/search", resourceLoationPath: ResourceLocation.CustomAction }
 
     // private to disallow creating other instances of this type
     private constructor(private readonly key: string, public readonly value: any) { }

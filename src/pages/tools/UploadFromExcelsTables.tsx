@@ -45,7 +45,6 @@ const getColumnType = (rows: Row[], columnIndex: number): string => {
 }
 
 export default function UploadFromExcelsTables() {
-    const navigate = useNavigate();
 
     const { fetchData, error, loading, doFetchPost } = useFetch();
 

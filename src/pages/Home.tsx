@@ -41,6 +41,9 @@ function HomePage() {
                     Performing some actions on KBMax configurators is often complicated,
                     here you can find a set of tools that can make your life easier
                 </Text>
+                <Text color={"gray.500"} maxW={"3xl"}>
+                    PS: If you want to keep the extension open, right click {">"} inspect
+                </Text>
                 <Stack spacing={6} direction={"row"}>
                     <Button
                         rounded={"full"}
