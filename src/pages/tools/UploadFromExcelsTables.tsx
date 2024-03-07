@@ -23,9 +23,10 @@ export interface CustomTableData {
 }
 
 const isNumeric = (str: string) => {
-    if (!isNaN(Number(str))) return true
-    if (!isNaN(parseFloat(str))) return true
-    return false
+    const regExTest = /^-?[0-9]\d*(\.\d+)?$/;
+    str = str.replace(",", ".");
+
+    return regExTest.test(str);
 
 }
 const getColumnType = (rows: Row[], columnIndex: number): string => {

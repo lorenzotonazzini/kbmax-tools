@@ -14,7 +14,7 @@ export default function ExcelTablesActionBar({ data, isLoading, isDisabled, hand
     return (
         <>
             {data.length > 0 ?
-                <HStack position={"fixed"} bottom={0} left={0} right={0} height={46} background={"#FFFFFF"} spacing={3} padding={2}>
+                <HStack position={"fixed"} bottom={0} left={0} right={0} height={46} background={"BlackAlpha 600"} spacing={3} padding={2}>
                     <CustomButton onClick={handleTableCreation} isLoading={isLoading} isDisabled={isDisabled} w={(tableIndex < data.length - 1) ? "75%" : "100%"}> Create</CustomButton>
                     {
                         (tableIndex < data.length - 1) ?
