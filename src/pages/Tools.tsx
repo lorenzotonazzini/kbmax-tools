@@ -18,7 +18,7 @@ const ToolsList = [
     {
         name: "Table References",
         description:
-            "If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it (configurators, scenes, safe functions and quote headers!)",
+            "If a table is used a lot you can easily forget where it is used, this tool helps you discover all the references to it.",
         route: "/tools/findReferences",
         param: {
             type: ResouceType.Table,
