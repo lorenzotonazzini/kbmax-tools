@@ -60,11 +60,14 @@ export default function UploadFromExcelsTables() {
             //files names
             const filesNames = [] as string[];
 
+            const promises = [] as Promise<Row[]>[];
             Array.from(e.currentTarget.files).map((file, index) => {
-
                 filesNames.push(file.name.split(".")[0].split(" ").join(""));
+                promises.push(readXlsxFile(file))
+            });
 
-                readXlsxFile(file).then((rows) => {
+            Promise.all(promises).then((table) => {
+                table.map((rows) => {
                     // new file
                     const tableData: CustomTableData = { types: [], columnNames: [], data: [] };
                     const headers: Row = rows[0];
@@ -74,7 +77,6 @@ export default function UploadFromExcelsTables() {
                         tableData.columnNames.push((header as string).split(" ").join(""));
                         tableData.types.push(getColumnType(rows, index));
                     })
-
                     //data
                     rows.map((data) => {
                         //for each cell
@@ -87,16 +89,21 @@ export default function UploadFromExcelsTables() {
 
                     //
                     tablesData.push(tableData);
-
-                }).then(() => {
-                    setData([...tablesData]);
-                    setTablesNames([...filesNames]);
-                    setIndex(0);
                 });
 
-            })
+            }).then(() => {
+                setData(tablesData);
+                setTablesNames(filesNames);
+                setIndex(0);
+
+            });
+
         }
     }
+
+    React.useEffect(() => {
+        data.map((table, index) => console.log(index, tablesNames[index], table))
+    }, [data]);
 
     const handleTableCreation = async () => {
         // create columns
@@ -107,12 +114,17 @@ export default function UploadFromExcelsTables() {
                 type: data[index].types[columnIndex]
             })
         });
-
-        await doFetchPost("/api/tables?waitForRefresh=false", {
+        console.log("CALL ___________________________________")
+        console.log(index, {
             name: tablesNames[index],
             columns: columns,
             data: data[index].data
-        }).then(() => (!error) ? setTablesCreated([...tablesCreated, index]) : null);
+        })
+        /*await doFetchPost("/api/tables?waitForRefresh=false", { 
+            name: tablesNames[index],
+            columns: columns,
+            data: data[index].data
+        }).then(() => (!error) ? setTablesCreated([...tablesCreated, index]) : null);*/
 
     }
 

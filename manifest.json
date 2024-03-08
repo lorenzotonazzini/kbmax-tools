@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "manifest_version": 3,
   "name": "KBMax Tools",
-  "description": "This is a usefull collection of tools",
+  "description": "This is a usefull collection of tools for Epicor CPQ (formerly KBMax)",
   "action": {
     "default_popup": "js/index.html",
     "default_title": "KBMax Tools"
