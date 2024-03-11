@@ -68,6 +68,13 @@ const ToolsList = [
             "Often finding all the 'write logs' in a project is complicated when there start to be several configurators, this tool helps you find them all",
         route: "/tools/findWriteLog",
         param: ["console.log", "e.logs.push"]
+    },
+    {
+        name: "Delete stuck quote",
+        description:
+            `Sometimes it happens that a quote gets stuck (often in a build state), with this tool you can try to delete it.
+            You must be company admin to run the tool.`,
+        route: "/tools/deleteQuote"
     }
 ];
 export default function ToolsPage() {

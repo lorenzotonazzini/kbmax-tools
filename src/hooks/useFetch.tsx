@@ -58,7 +58,7 @@ export const useFetch = () => {
         setError(false);
         setMultipleFetchData([]);
         setLoading(true);
-        
+
         chrome.tabs.query({ currentWindow: true, active: true }).
             then(tabs => {
                 if (tabs[0].id) {
@@ -101,5 +101,34 @@ export const useFetch = () => {
 
     }
 
-    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, multipleFetchGet };
+    const deleteFetchBackground = (url: string) =>
+        fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then(res => (res.ok) ? res.json() : res.status);
+
+    const doFetchDelete = async (resource: string) => {
+        //set state
+        setError(false);
+        setData(null);
+        setLoading(true);
+
+        chrome.tabs.query({ currentWindow: true, active: true }, async function (tabs) {
+            if (tabs[0].id) {
+                await chrome.scripting.executeScript({
+                    target: {
+                        tabId: tabs[0].id,
+                    },
+                    func: deleteFetchBackground,
+                    args: [resource],
+                }).then(injectionResults => handleFetchResult(injectionResults[0].result));
+            }
+
+        });
+
+    }
+
+    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, multipleFetchGet, doFetchDelete };
 };

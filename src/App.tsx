@@ -4,6 +4,7 @@ import Tools from "./pages/Tools";
 import UploadFromExcelsTables from "./pages/tools/UploadFromExcelsTables";
 import FindInSnap from "./pages/tools/FindInSnap";
 import FindInResources from "./pages/tools/FindInResources";
+import DeleteQuote from "./pages/tools/DeleteQuote";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/tools/findBreakpoints" element={<FindInSnap />} />
         <Route path="/tools/findWriteLog" element={<FindInSnap />} />
         <Route path="/tools/findReferences" element={<FindInResources />} />
+        <Route path="/tools/deleteQuote" element={<DeleteQuote />} />
       </Routes>
     </MemoryRouter >
   );
