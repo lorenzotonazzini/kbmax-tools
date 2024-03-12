@@ -31,7 +31,9 @@ interface FoundResource {
 export default function FindInResources() {
 
     const { state } = useLocation();
-    const { fetchData, doFetchPost, error, loading } = useFetch();
+    const { fetchData, doFetchPost, error } = useFetch();
+
+    const [isLoading, setIsLoading] = React.useState(false)
 
     const [resourceToFindId, setResourceToFindId] = React.useState(0);
     const [resourceTypeToFind, setResourceTypeToFind] = React.useState(null as unknown as ResouceType)
@@ -57,6 +59,8 @@ export default function FindInResources() {
 
     const findCurrentResource = () => resourcesFound.find(resource => !resource.finished);
 
+    const allResourceFound = () => resourcesFound.at(-1)?.finished;
+
     React.useEffect(() => {
 
         //Set resources where search
@@ -76,7 +80,8 @@ export default function FindInResources() {
 
     }, []);
 
-    const handleFindTableReference = () => {
+    const handleFindReference = () => {
+        setIsLoading(true);
         setSearch(true);
         const currentResource = findCurrentResource();
 
@@ -91,7 +96,7 @@ export default function FindInResources() {
         }
     }
     React.useEffect(() => {
-        if (search) handleFindTableReference();
+        if (search) handleFindReference();
     }, [resourcesFound]);
 
     React.useEffect(() => {
@@ -122,6 +127,7 @@ export default function FindInResources() {
             if (currentResource) {
                 currentResource.finished = true;
                 setResourcesFound([...resourcesFound]);
+                if (allResourceFound()) setIsLoading(false)
             }
         }
     }, [fetchData]);
@@ -169,7 +175,7 @@ export default function FindInResources() {
             }
 
             <Center>
-                <CustomButton w={"100%"} margin={3} onClick={handleFindTableReference} isLoading={loading}>Find</CustomButton>
+                <CustomButton w={"100%"} margin={3} onClick={handleFindReference} isLoading={isLoading}>Find</CustomButton>
             </Center>
         </VStack>
 

@@ -13,12 +13,9 @@ import {
     Link,
     Text,
     FormHelperText,
-    FormErrorMessage
+    FormErrorMessage,
+    useToast
 } from '@chakra-ui/react'
-import { CheckCircleIcon, ExternalLinkIcon } from '@chakra-ui/icons'
-
-import { useLocation } from "react-router-dom";
-
 
 import CustomButton from "../../components/CustomButton";
 import { useFetch } from "../../hooks/useFetch";
@@ -28,6 +25,7 @@ import { Quote } from "../../interfaces/Quote";
 
 export default function DeleteQuote() {
 
+    const toast = useToast();
     const { fetchData, doFetchGet, doFetchPost, doFetchDelete, error } = useFetch();
 
     const [isLoading, setIsloading] = React.useState(false);
@@ -58,40 +56,56 @@ export default function DeleteQuote() {
                 setEnv(env ? env : "");
 
             }
-
         })
-
-
     }, []);
-    const openBackgroundTabProduct = async (product: ReferencedResource) => {
-        chrome.tabs.query({ currentWindow: true, active: true }).
-            then(tabs => {
-                if (tabs[0].url) {
-                    const companyUrl = tabs[0].url.split(".com")[0] + ".com";
-                    if (product.type == ResouceType.Scene) chrome.tabs.create({ url: companyUrl + "/admin/scenes/" + product.id, active: false });
-                    else chrome.tabs.create({ url: companyUrl + "/admin/configurators/" + product.id, active: false });
-                }
-            })
-    }
 
     React.useEffect(() => {
-        if (fetchData && !infoQuote) {
+        if (!error && fetchData!== 500) {
+            if (fetchData && !infoQuote) {
 
-            setInfoQuote(true);
-            delete (fetchData as Quote).idWorkflow;
-            delete (fetchData as Quote).state;
+                setInfoQuote(true);
+                delete (fetchData as Quote).idWorkflow;
+                delete (fetchData as Quote).state;
 
-            doFetchPost("/api/quotes/save", fetchData);
+                doFetchPost("/api/quotes/save", fetchData);
+            }
+            else if (fetchData) {
+                //delete quote
+                doFetchDelete("/api/quotes/" + quoteId);
 
+                //
+                setIsloading(false);
+
+                //
+                toast({
+                    title: 'Quote deleted',
+                    description: "Quote deleted, try going to the Quotes list page",
+                    status: 'success',
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
         }
-        else if (fetchData) {
-            //delete quote
-            doFetchDelete("/api/quotes/" + quoteId);
 
-            //
+    }, [fetchData])
+
+
+    React.useEffect(() => {
+
+        if (error && fetchData) {
+            toast({
+                title: 'Error',
+                description: `Error ${fetchData}, check the quote ID!`,
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+            });
+
             setIsloading(false);
         }
-    }, [fetchData])
+
+    }, [error]);
+
 
     return (
         <VStack spacing={5} w={500}>
