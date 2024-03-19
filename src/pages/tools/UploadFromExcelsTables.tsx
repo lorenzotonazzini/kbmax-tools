@@ -114,17 +114,11 @@ export default function UploadFromExcelsTables() {
                 type: data[index].types[columnIndex]
             })
         });
-        console.log("CALL ___________________________________")
-        console.log(index, {
+        await doFetchPost("/api/tables?waitForRefresh=false", { 
             name: tablesNames[index],
             columns: columns,
             data: data[index].data
-        })
-        /*await doFetchPost("/api/tables?waitForRefresh=false", { 
-            name: tablesNames[index],
-            columns: columns,
-            data: data[index].data
-        }).then(() => (!error) ? setTablesCreated([...tablesCreated, index]) : null);*/
+        }).then(() => (!error) ? setTablesCreated([...tablesCreated, index]) : null);
 
     }
 
