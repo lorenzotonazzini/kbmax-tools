@@ -75,6 +75,12 @@ const ToolsList = [
             `Sometimes it happens that a quote gets stuck (often in a build state), with this tool you can try to delete it.
             You must be company admin to run the tool.`,
         route: "/tools/deleteQuote"
+    },
+    {
+        name: "Unsubmit quote",
+        description:
+            `Unsubmit a quote! (company admin permission needed)`,
+        route: "/tools/unsubmitQuote"
     }
 ];
 export default function ToolsPage() {
