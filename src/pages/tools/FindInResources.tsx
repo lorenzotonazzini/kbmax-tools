@@ -81,7 +81,7 @@ export default function FindInResources() {
     }, []);
 
     const handleFindReference = () => {
-        setIsLoading(true);
+
         setSearch(true);
         const currentResource = findCurrentResource();
 
@@ -95,6 +95,7 @@ export default function FindInResources() {
             });
         }
     }
+
     React.useEffect(() => {
         if (search) handleFindReference();
     }, [resourcesFound]);
@@ -126,8 +127,10 @@ export default function FindInResources() {
 
             if (currentResource) {
                 currentResource.finished = true;
+
+                if (allResourceFound()) setIsLoading(false);
+
                 setResourcesFound([...resourcesFound]);
-                if (allResourceFound()) setIsLoading(false)
             }
         }
     }, [fetchData]);
@@ -175,7 +178,13 @@ export default function FindInResources() {
             }
 
             <Center>
-                <CustomButton w={"100%"} margin={3} onClick={handleFindReference} isLoading={isLoading}>Find</CustomButton>
+                {
+                    allResourceFound() ? <></> : 
+                    <CustomButton w={"100%"} margin={3} onClick={() => {
+                        handleFindReference();
+                        setIsLoading(true);
+                    }} isLoading={isLoading}>Find</CustomButton>
+                }
             </Center>
         </VStack>
 
