@@ -8,10 +8,11 @@ A set of useful tools for KBMax (Epicor CPQ)
 #### Configurator references
 #### Scene references
 #### Safe function references
-#### Find media refrences
 #### Find breakpoints
 #### Find write-logs
 #### Delete stuck quote
+#### Un-submit stuck quote
+
 
 ## How to build
 This project is an extension for Chrome, to add it you must install all the dependencies:
