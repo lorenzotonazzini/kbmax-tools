@@ -81,6 +81,12 @@ const ToolsList = [
         description:
             `Unsubmit a quote! (company admin permission needed)`,
         route: "/tools/unsubmitQuote"
+    },
+    {
+        name: "Delete logs in a quote",
+        description:
+            `Sometimes it happens that a quote is very full of logs that slow down the whole load, with this tool you can clean up the quote from all the logs`,
+        route: "/tools/deleteLogs"
     }
 ];
 export default function ToolsPage() {

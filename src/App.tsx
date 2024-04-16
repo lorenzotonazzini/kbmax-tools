@@ -6,6 +6,7 @@ import FindInSnap from "./pages/tools/FindInSnap";
 import FindInResources from "./pages/tools/FindInResources";
 import DeleteQuote from "./pages/tools/DeleteQuote";
 import UnsubmitQuote from "./pages/tools/UnsubmitQuote";
+import DeleteLogs from "./pages/tools/DeleteLogs";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/tools/findReferences" element={<FindInResources />} />
         <Route path="/tools/deleteQuote" element={<DeleteQuote />} />
         <Route path="/tools/unsubmitQuote" element={<UnsubmitQuote />} />
+        <Route path="/tools/deleteLogs" element={<DeleteLogs />} />
       </Routes>
     </MemoryRouter >
   );

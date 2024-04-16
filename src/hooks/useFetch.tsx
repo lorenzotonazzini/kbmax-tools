@@ -11,6 +11,8 @@ export const useFetch = () => {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const [multipleDeleteResult, setMultipleDeleteResult] = useState([] as boolean[]);
+
     const getFetchBackground = (url: string) =>
         fetch(url).then(res => (res.ok) ? res.json() : res.status);
 
@@ -130,5 +132,31 @@ export const useFetch = () => {
 
     }
 
-    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, multipleFetchGet, doFetchDelete };
+    const multipleDelete = (resources: string[]) => {
+        //set state
+        setError(false);
+        setMultipleDeleteResult([]);
+        setLoading(true);
+
+        chrome.tabs.query({ currentWindow: true, active: true }).
+            then(tabs => {
+                if (tabs[0].id) {
+                    const promiseArr = resources.map(resource => chrome.scripting.executeScript({
+                        target: {
+                            tabId: tabs[0].id as number,
+                        },
+                        func: deleteFetchBackground,
+                        args: [resource],
+                    }).then(injectionResults => injectionResults[0].result));
+
+                    Promise.all(promiseArr).then((res) => {
+                        setMultipleDeleteResult([...res.map(result => true)])
+                        setLoading(false)
+                    });
+                }
+
+            })
+    }
+
+    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, multipleFetchGet, doFetchDelete, multipleDelete, multipleDeleteResult };
 };
