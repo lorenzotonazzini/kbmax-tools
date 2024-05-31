@@ -6,6 +6,7 @@ A set of useful tools for KBMax (Epicor CPQ)
 
 #### Upload tables from excel
 #### Table references
+#### Update the table description
 #### Configurator references
 #### Scene references
 #### Safe function references

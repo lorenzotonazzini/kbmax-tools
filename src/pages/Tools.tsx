@@ -26,9 +26,9 @@ const ToolsList = [
         }
     },
     {
-        name: "Add description to a table",
+        name: "Update the table description",
         description:
-            "KBMax has a column \"description\" in the table list, but it doesn't offer a UI way to set it, this tool adds via API a description",
+            "Epicor CPQ has a column \"description\" in the table list, but it doesn't offer a UI way to set it, this tool update via API a description",
         route: "/tools/addTableDescription"
     },
     {
