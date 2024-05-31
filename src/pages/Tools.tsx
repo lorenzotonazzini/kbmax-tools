@@ -25,6 +25,7 @@ const ToolsList = [
             searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader, ResourceSearchAPI.QuoteOutput]
         }
     },
+    
     {
         name: "Configurator References",
         description:

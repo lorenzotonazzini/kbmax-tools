@@ -5,6 +5,7 @@ import {
     FormLabel,
     FormErrorMessage,
     FormHelperText,
+    useToast
 } from '@chakra-ui/react'
 
 import { useNavigate } from "react-router-dom";
@@ -51,6 +52,8 @@ export default function UploadFromExcelsTables() {
     const [tablesNames, setTablesNames] = React.useState([] as string[]);
     const [data, setData] = React.useState([] as CustomTableData[]);
     const [index, setIndex] = React.useState(0);
+
+    const toast = useToast();
 
     const [tablesCreated, setTablesCreated] = React.useState([] as number[])
 
@@ -101,10 +104,6 @@ export default function UploadFromExcelsTables() {
         }
     }
 
-    React.useEffect(() => {
-        data.map((table, index) => console.log(index, tablesNames[index], table))
-    }, [data]);
-
     const handleTableCreation = async () => {
         // create columns
         var columns = [] as any[];
@@ -114,13 +113,38 @@ export default function UploadFromExcelsTables() {
                 type: data[index].types[columnIndex]
             })
         });
-        await doFetchPost("/api/tables?waitForRefresh=false", { 
+        await doFetchPost("/api/tables?waitForRefresh=false", {
             name: tablesNames[index],
             columns: columns,
             data: data[index].data
         }).then(() => (!error) ? setTablesCreated([...tablesCreated, index]) : null);
 
     }
+
+    React.useEffect(() => {
+        if(fetchData) {
+            if (isNaN(parseInt(fetchData))) {
+                toast({
+                    title: 'Table Created',
+                    description: "Table Created",
+                    status: 'success',
+                    duration: 1000,
+                    isClosable: true,
+                })
+            }
+            else {
+                toast({
+                    title: 'Error',
+                    description: "Error",
+                    status: 'error',
+                    duration: 1000,
+                    isClosable: true,
+                })
+            }
+        }
+        
+            
+    }, [fetchData]);
 
     return (
         <VStack w={"500px"} spacing={4} maxH={600} overflowY={"auto"}>
