@@ -25,7 +25,12 @@ const ToolsList = [
             searchIn: [ResourceSearchAPI.Products, ResourceSearchAPI.Scenes, ResourceSearchAPI.SafeFunctions, ResourceSearchAPI.QuoteHeader, ResourceSearchAPI.QuoteOutput]
         }
     },
-    
+    {
+        name: "Add description to a table",
+        description:
+            "KBMax has a column \"description\" in the table list, but it doesn't offer a UI mode to set it, this tool adds via API a description",
+        route: "/tools/addTableDescription"
+    },
     {
         name: "Configurator References",
         description:

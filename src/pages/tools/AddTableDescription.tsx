@@ -21,23 +21,28 @@ import CustomButton from "../../components/CustomButton";
 import { useFetch } from "../../hooks/useFetch";
 import { ReferencedResource, ResouceType } from "../../interfaces/Resources";
 import { Quote } from "../../interfaces/Quote";
+import { Table } from "../../interfaces/Table";
 
 
 export default function AddTableDescription() {
 
     const toast = useToast();
-    const { fetchData, doFetchGet, doFetchPost, doFetchDelete, error } = useFetch();
+    const { fetchData, doFetchGet, doFetchPut, error } = useFetch();
 
     const [isLoading, setIsloading] = React.useState(false);
 
-    const [quoteId, setQuoteId] = React.useState(0);
+    const [tableId, setTableId] = React.useState(0);
+    const [tableDescription, setTableDescription] = React.useState("");
+
+
+    const [tableInfo, setTableInfo] = React.useState(false);
+
     const [env, setEnv] = React.useState("");
 
-    const [infoQuote, setInfoQuote] = React.useState(false);
 
-    const getQuoteInfo = () => {
+    const getTableInfo = () => {
         setIsloading(true);
-        doFetchGet("/api/quotes/" + quoteId);
+        doFetchGet("/api/tables/" + tableId);
     }
 
 
@@ -46,10 +51,10 @@ export default function AddTableDescription() {
         chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
             const url = tabs[0].url
 
-            if (url && url.includes(".kbmax.com/quotes/")) {
+            if (url && url.includes(".kbmax.com/tables/")) {
                 //get page url
                 const numbersInUrl = url.match(/\d+/);
-                if (numbersInUrl) setQuoteId(+numbersInUrl[0])
+                if (numbersInUrl) setTableId(+numbersInUrl[0])
                 //Get env
                 const env = url.split(".")[0].split("-").at(-1);
                 setEnv(env ? env : "");
@@ -59,17 +64,16 @@ export default function AddTableDescription() {
     }, []);
 
     React.useEffect(() => {
-        if (!error && fetchData!== 500) {
-            if (fetchData && !infoQuote) {
+        if (!error && fetchData !== 500) {
+            if (fetchData && !tableInfo) {
 
-                setInfoQuote(true);
-                delete (fetchData as Quote).idWorkflow;
-                delete (fetchData as Quote).state;
+                setTableInfo(true);
+                (fetchData as Table).description = tableDescription;
 
-                doFetchPost("/api/quotes/save", fetchData);
+                doFetchPut("/api/tables/" + tableId, fetchData);
                 toast({
-                    title: 'Quote unsubmitted',
-                    description: "Quote unsubmitted, try going to the Quotes list page",
+                    title: 'Description added',
+                    description: "Description added",
                     status: 'success',
                     duration: 2000,
                     isClosable: true,
@@ -103,13 +107,15 @@ export default function AddTableDescription() {
         <VStack spacing={5} w={500}>
             <Center>
                 <FormControl padding={10} paddingBottom={3}>
-                    <FormLabel>Quote Id</FormLabel>
-                    <Input type='number' value={quoteId} onChange={(e) => setQuoteId(+e.target.value)} />
+                    <FormLabel>Table Id</FormLabel>
+                    <Input type='number' value={tableId} onChange={(e) => setTableId(+e.target.value)} />
+                    <FormLabel>Description</FormLabel>
+                    <Input type='string' value={tableDescription} onChange={(e) => setTableDescription(e.target.value)} />
                 </FormControl>
             </Center>
 
             <Center>
-                <CustomButton w={"100%"} margin={3} onClick={getQuoteInfo} isLoading={isLoading}>Un-Submit</CustomButton>
+                <CustomButton w={"100%"} margin={3} onClick={getTableInfo} isLoading={isLoading}>Update Description</CustomButton>
             </Center>
         </VStack>
 

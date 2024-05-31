@@ -25,6 +25,17 @@ export const useFetch = () => {
             body: JSON.stringify(body),
         }).then(res => (res.ok) ? res.json() : res.status);
 
+
+
+    const putFetchBackground = (url: string, body: any) =>
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        }).then(res => (res.ok) ? res.json() : res.status);
+
     const handleFetchResult = async (result: any) => {
 
         //error
@@ -103,6 +114,27 @@ export const useFetch = () => {
 
     }
 
+    const doFetchPut = async (resource: string, body: any) => {
+        //set state
+        setError(false);
+        setData(null);
+        setLoading(true);
+
+        chrome.tabs.query({ currentWindow: true, active: true }, async function (tabs) {
+            if (tabs[0].id) {
+                await chrome.scripting.executeScript({
+                    target: {
+                        tabId: tabs[0].id,
+                    },
+                    func: putFetchBackground,
+                    args: [resource, body],
+                }).then(injectionResults => handleFetchResult(injectionResults[0].result));
+            }
+
+        });
+
+    }
+
     const deleteFetchBackground = (url: string) =>
         fetch(url, {
             method: "DELETE",
@@ -158,5 +190,5 @@ export const useFetch = () => {
             })
     }
 
-    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, multipleFetchGet, doFetchDelete, multipleDelete, multipleDeleteResult };
+    return { fetchData, multipleFetchData, error, loading, doFetchGet, doFetchPost, doFetchPut, multipleFetchGet, doFetchDelete, multipleDelete, multipleDeleteResult };
 };
