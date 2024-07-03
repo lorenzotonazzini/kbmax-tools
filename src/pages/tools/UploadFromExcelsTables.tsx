@@ -1,20 +1,22 @@
 import React from 'react';
 import {
-    Card, Input, CardBody, Text,
-    VStack, HStack, Button, Center, FormControl,
+    Card, Input, CardBody,
+    VStack, Button, Center, FormControl,
     FormLabel,
     FormErrorMessage,
-    FormHelperText,
-    useToast
+    useToast,
+    Alert,
+    AlertIcon,
+    AlertDescription
 } from '@chakra-ui/react'
 
-import { useNavigate } from "react-router-dom";
 import readXlsxFile, { Row } from 'read-excel-file'
 
 import CustomTable from '../../components/CustomTable';
 
 import { useFetch } from '../../hooks/useFetch';
 import ExcelTablesActionBar from '../../components/tablesfromExcel/ExcelTablesActionBar';
+import { TableFound } from '../../interfaces/Table';
 
 
 export interface CustomTableData {
@@ -47,7 +49,7 @@ const getColumnType = (rows: Row[], columnIndex: number): string => {
 
 export default function UploadFromExcelsTables() {
 
-    const { fetchData, error, loading, doFetchPost } = useFetch();
+    const { fetchData, error, loading, doFetchPost, doFetchPut } = useFetch();
 
     const [tablesNames, setTablesNames] = React.useState([] as string[]);
     const [data, setData] = React.useState([] as CustomTableData[]);
@@ -118,33 +120,87 @@ export default function UploadFromExcelsTables() {
             columns: columns,
             data: data[index].data
         }).then(() => (!error) ? setTablesCreated([...tablesCreated, index]) : null);
+    }
 
+    const findTableByName = async () => {
+        await doFetchPost("/api/tables/search", {
+            query: tablesNames[index],
+            fields: [
+                "id"
+            ],
+            sortField: "name",
+            skip: 0,
+            take: 1
+        });
+        toast.closeAll();
     }
 
     React.useEffect(() => {
-        if(fetchData) {
-            if (isNaN(parseInt(fetchData))) {
+        if (fetchData) {
+
+            if (Array.isArray(fetchData)) {
+                //find existing table id
+                const tableId = (fetchData[0] as TableFound).id;
+
+                // create columns
+                var columns = [] as any[];
+                data[index].columnNames.map((columnName, columnIndex) => {
+                    columns.push({
+                        name: columnName,
+                        type: data[index].types[columnIndex]
+                    })
+                });
+
+                doFetchPut("/api/tables/" + tableId, {
+                    id: tableId,
+                    name: tablesNames[index],
+                    columns: columns,
+                    data: data[index].data
+                })
+            }
+            else if (isNaN(parseInt(fetchData))) {
+                //table created
                 toast({
-                    title: 'Table Created',
-                    description: "Table Created",
+                    title: 'Success',
+                    description: "Action performed",
                     status: 'success',
                     duration: 1000,
                     isClosable: true,
                 })
             }
-            else {
-                toast({
-                    title: 'Error',
-                    description: "Error",
-                    status: 'error',
-                    duration: 1000,
-                    isClosable: true,
-                })
-            }
         }
-        
-            
+
     }, [fetchData]);
+
+    React.useEffect(() => {
+        if (fetchData == 400) {
+            toast({
+                title: 'Error',
+                description: "Name already in use, do you want to overwrite the table?",
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                render: () => (
+                    <Alert status='info' variant='solid'>
+                        <AlertIcon />
+                        <AlertDescription> Name already in use, do you want to overwrite the table?</AlertDescription>
+                        <Button onClick={findTableByName}>Yes</Button>
+                        <Button onClick={() => toast.closeAll()}>No</Button>
+                    </Alert>
+                )
+            })
+        }
+        else if (error) {
+            toast({
+                title: 'Error',
+                description: "Error",
+                status: 'error',
+                duration: 1000,
+                isClosable: true,
+            })
+        }
+
+    }, [error])
 
     return (
         <VStack w={"500px"} spacing={4} maxH={600} overflowY={"auto"}>
