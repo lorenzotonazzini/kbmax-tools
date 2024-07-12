@@ -5,4 +5,5 @@ export interface Table {
 
 export interface TableFound {
     id: number,
+    name: string
 }

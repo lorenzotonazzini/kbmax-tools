@@ -27,6 +27,11 @@ export interface CustomTableData {
 
 const isNumeric = (str: string) => {
     const regExTest = /^-?[0-9]\d*(\.\d+)?$/;
+
+    if (typeof str === 'number') {
+        return true;
+    }
+
     str = str.replace(",", ".");
 
     return regExTest.test(str);
@@ -46,6 +51,11 @@ const getColumnType = (rows: Row[], columnIndex: number): string => {
     if (isNumber) return 'number'
     return 'text'
 }
+
+const toTitleCase =(str: string) : string => str.replace(
+      /\w\S*/g,
+      text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    );
 
 export default function UploadFromExcelsTables() {
 
@@ -77,9 +87,12 @@ export default function UploadFromExcelsTables() {
                     const tableData: CustomTableData = { types: [], columnNames: [], data: [] };
                     const headers: Row = rows[0];
                     rows.shift();
+
                     //names
                     headers.map((header, index) => {
-                        tableData.columnNames.push((header as string).split(" ").join(""));
+                        tableData.columnNames.push(toTitleCase(header as string).split(" ").join(""));
+                        console.log(toTitleCase(header as string));
+
                         tableData.types.push(getColumnType(rows, index));
                     })
                     //data
@@ -126,11 +139,12 @@ export default function UploadFromExcelsTables() {
         await doFetchPost("/api/tables/search", {
             query: tablesNames[index],
             fields: [
-                "id"
+                "id",
+                "name"
             ],
             sortField: "name",
             skip: 0,
-            take: 1
+            take: 1000
         });
         toast.closeAll();
     }
@@ -140,23 +154,28 @@ export default function UploadFromExcelsTables() {
 
             if (Array.isArray(fetchData)) {
                 //find existing table id
-                const tableId = (fetchData[0] as TableFound).id;
+                const tableInfo = (fetchData as TableFound[]).find(data => data.name == tablesNames[index]);
 
-                // create columns
-                var columns = [] as any[];
-                data[index].columnNames.map((columnName, columnIndex) => {
-                    columns.push({
-                        name: columnName,
-                        type: data[index].types[columnIndex]
+                if (tableInfo) {
+                    const tableId = tableInfo.id;
+
+                    // create columns
+                    var columns = [] as any[];
+                    data[index].columnNames.map((columnName, columnIndex) => {
+                        columns.push({
+                            name: columnName,
+                            type: data[index].types[columnIndex]
+                        })
+                    });
+
+                    doFetchPut("/api/tables/" + tableId, {
+                        id: tableId,
+                        name: tablesNames[index],
+                        columns: columns,
+                        data: data[index].data
                     })
-                });
+                }
 
-                doFetchPut("/api/tables/" + tableId, {
-                    id: tableId,
-                    name: tablesNames[index],
-                    columns: columns,
-                    data: data[index].data
-                })
             }
             else if (isNaN(parseInt(fetchData))) {
                 //table created
