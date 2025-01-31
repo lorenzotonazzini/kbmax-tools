@@ -15,7 +15,7 @@ A set of useful tools for KBMax (Epicor CPQ)
 #### Delete stuck quote
 #### Un-submit stuck quote
 #### Delete logs in a quote
-#### Recursive subfolder upload media
+#### Stopwatch
 
 ## How to build
 This project is an extension for Chrome, to add it you must install all the dependencies:
