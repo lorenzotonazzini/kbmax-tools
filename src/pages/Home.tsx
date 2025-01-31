@@ -9,6 +9,7 @@ import {
     Center,
     Image,
 } from "@chakra-ui/react";
+import { useCallback, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 

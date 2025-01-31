@@ -8,5 +8,14 @@
     "default_title": "KBMax Tools"
   },
   "permissions": ["scripting", "activeTab", "tabs"],
-  "host_permissions": ["*://*.kbmax.com/*"]
+  "host_permissions": ["*://*.kbmax.com/*"],
+  "externally_connectable": {
+    "matches": ["*://*.kbmax.com/*"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/content.js"]
+    }
+  ]
 }

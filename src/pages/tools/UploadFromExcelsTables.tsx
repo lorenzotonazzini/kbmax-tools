@@ -91,7 +91,6 @@ export default function UploadFromExcelsTables() {
                     //names
                     headers.map((header, index) => {
                         tableData.columnNames.push(toTitleCase(header as string).split(" ").join(""));
-                        console.log(toTitleCase(header as string));
 
                         tableData.types.push(getColumnType(rows, index));
                     })

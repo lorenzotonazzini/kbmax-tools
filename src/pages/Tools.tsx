@@ -94,6 +94,13 @@ const ToolsList = [
             `Sometimes it happens that a quote is very full of logs that slow down the whole load, with this tool you can clean up the quote from all the logs`,
         route: "/tools/deleteLogs"
     }
+    ,
+    {
+        name: "Time elapsed between two code points",
+        description:
+            `Print to console the time passed in milliseconds between two different points in the snap code`,
+        route: "/tools/timeElapsed"
+    }
 ];
 export default function ToolsPage() {
     const navigate = useNavigate();
@@ -115,4 +122,5 @@ export default function ToolsPage() {
         </Center>
 
     );
+    
 }

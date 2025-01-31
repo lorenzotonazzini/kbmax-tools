@@ -51,7 +51,6 @@ export const useFetch = () => {
         setError(false);
         setData(null);
         setLoading(true);
-
         chrome.tabs.query({ currentWindow: true, active: true }, async function (tabs) {
             if (tabs[0].id) {
                 await chrome.scripting.executeScript({

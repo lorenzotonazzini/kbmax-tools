@@ -8,6 +8,7 @@ import DeleteQuote from "./pages/tools/DeleteQuote";
 import UnsubmitQuote from "./pages/tools/UnsubmitQuote";
 import DeleteLogs from "./pages/tools/DeleteLogs";
 import AddTableDescription from "./pages/tools/AddTableDescription";
+import TimeElapsed from "./pages/tools/timeElapsed";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/tools/unsubmitQuote" element={<UnsubmitQuote />} />
         <Route path="/tools/deleteLogs" element={<DeleteLogs />} />
         <Route path="/tools/addTableDescription" element={<AddTableDescription />} />
+        <Route path="/tools/timeElapsed" element={<TimeElapsed />} />
       </Routes>
     </MemoryRouter >
   );

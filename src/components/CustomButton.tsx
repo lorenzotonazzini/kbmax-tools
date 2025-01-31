@@ -1,13 +1,4 @@
-import {
-    Accordion,
-    AccordionItem,
-    AccordionButton,
-    AccordionPanel,
-    AccordionIcon,
-    Box,
-    Stack,
-    Button
-} from '@chakra-ui/react'
+import {Button} from '@chakra-ui/react'
 
 export default function CustomButton(props: any) {
 
