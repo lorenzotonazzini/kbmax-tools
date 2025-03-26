@@ -100,6 +100,12 @@ const ToolsList = [
         description:
             `Print to console the time passed in milliseconds between two different points in the snap code`,
         route: "/tools/timeElapsed"
+    },
+    {
+        name: "Write log at the end of each value rule",
+        description:
+            `Adds a value rule, with a write log inside, for each existing value rule. So the user can see which value rule is the longest to execute`,
+        route: "/tools/printValueRuleName"
     }
 ];
 export default function ToolsPage() {

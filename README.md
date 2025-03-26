@@ -16,6 +16,7 @@ A set of useful tools for KBMax (Epicor CPQ)
 #### Un-submit stuck quote
 #### Delete logs in a quote
 #### Stopwatch
+#### Add console write log at the end of each value rule
 
 ## How to build
 This project is an extension for Chrome, to add it you must install all the dependencies:
