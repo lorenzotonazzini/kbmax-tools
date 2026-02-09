@@ -95,7 +95,7 @@ export default function PrintValueRuleName() {
                         }
                     });
 
-
+                    console.log(fetchData);
                     //
                     valueRulesObj.rules = newValueRules;
                 }

@@ -7,7 +7,10 @@
     "default_popup": "js/index.html",
     "default_title": "KBMax Tools"
   },
-  "permissions": ["scripting", "activeTab", "tabs"],
+  "permissions": ["scripting", "activeTab", "tabs", "contextMenus"],
+  "background": {
+    "service_worker": "js/background.js"
+  },
   "host_permissions": ["*://*.kbmax.com/*"],
   "externally_connectable": {
     "matches": ["*://*.kbmax.com/*"]

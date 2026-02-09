@@ -1,5 +1,3 @@
-console.log("Content script loaded!");
-
 let startMessage = null;
 let endMessage = null;
 
@@ -32,3 +30,12 @@ window.addEventListener("message", function(event) {
 window.getLastReceivedMessage = function() {
   return lastReceivedMessage;
 };
+
+
+//copy elem
+window._lastRightClickedElement = null;
+
+document.addEventListener("contextmenu", (event) => {
+  window._lastRightClickedElement = event.target;
+  console.log('aaaa');
+}, true);

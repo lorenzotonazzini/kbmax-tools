@@ -4,6 +4,7 @@ import App from './App';
 
 import { ChakraProvider } from '@chakra-ui/react'
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react'
+//
 
 const root = document.createElement("div")
 root.className = "container"
