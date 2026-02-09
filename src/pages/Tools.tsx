@@ -106,6 +106,12 @@ const ToolsList = [
         description:
             `Adds a value rule, with a write log inside, for each existing value rule. So the user can see which value rule is the longest to execute`,
         route: "/tools/printValueRuleName"
+    },
+    {
+        name: "Copy name to clipboard with a right click",
+        description:
+            `You don't have to change pages in the configurator; you can right-click and select “KBMax - copy elem,” which makes development much faster if you have numerous fields to copy.`,
+        route: ""
     }
 ];
 export default function ToolsPage() {
