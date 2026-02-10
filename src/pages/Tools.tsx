@@ -110,7 +110,8 @@ const ToolsList = [
     {
         name: "Copy name to clipboard with a right click",
         description:
-            `You don't have to change pages in the configurator; you can right-click and select “KBMax - copy elem,” which makes development much faster if you have numerous fields to copy.`,
+            `You don't have to change pages in the configurator; you can right-click and select “KBMax - copy elem,” which makes development much faster if you have numerous fields to copy.
+            You can also copy an element from snap, by performing a right click on it (it works better if you first select the block and then right click directly on the name you want to copy)`,
         route: ""
     }
 ];
@@ -119,7 +120,7 @@ export default function ToolsPage() {
     return (
         <Center w={"500px"}>
             <Accordion allowToggle w={"500px"}>
-                {ToolsList.map((tool) => (
+                {ToolsList.map((tool) => ( (tool.route)?
                     <ExpanderTool
                         name={tool.name}
                         description={tool.description}
@@ -128,7 +129,7 @@ export default function ToolsPage() {
                                 params: tool.param
                             }
                         })}
-                    />
+                    /> : <></>
                 ))}
             </Accordion>
         </Center>

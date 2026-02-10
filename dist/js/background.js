@@ -1,3 +1,6 @@
+
+
+// Copy Inner HTML
 // Create the menu item
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -9,6 +12,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Listen for the click
 chrome.contextMenus.onClicked.addListener((info, tab) => {
+  
   if (info.menuItemId === "copy-inner-html") {
     chrome.scripting.executeScript({
       target: { tabId: tab.id },

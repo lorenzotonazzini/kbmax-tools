@@ -18,6 +18,7 @@ A set of useful tools for KBMax (Epicor CPQ)
 #### Stopwatch
 #### Add console write log at the end of each value rule
 #### Copy "inner HTML" with a right click
+#### Copy snap bloc text with the right menu
 
 ## How to build
 This project is an extension for Chrome, to add it you must install all the dependencies:
